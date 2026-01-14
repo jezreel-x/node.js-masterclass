@@ -15,12 +15,17 @@ const server = http.createServer((req, res) => {
     // replace multiple slashes
     const normalizedPath = pathname.replace(/\/+/g, '');
 
+    // access query parameters
+    const queryParams = parsedUrl.query;
+
     // access the HTTP method
     const method = req.method.toLowerCase();
 
     // send response
     res.writeHead(200, { 'Content-Type': 'text/plain' });
     res.end(`Normalized Path: ${normalizedPath}\nMethod: ${method}\n`);
+
+    console.log('Query Parameters:', queryParams);
 });
 
 // server listening on port 3000
