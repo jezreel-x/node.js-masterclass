@@ -2,6 +2,7 @@
 
 const http = require('http');
 const url = require('url');
+const StringDecoder = require('string_decoder').StringDecoder;
 
 // creating a server
 const server = http.createServer((req, res) => {
@@ -20,6 +21,20 @@ const server = http.createServer((req, res) => {
 
     // access the HTTP method
     const method = req.method.toLowerCase();
+
+    // accessing the payload (if any)
+    const decoder = new StringDecoder('utf-8');
+    let buffer = '';
+
+    req.on('data', (data) => {
+        buffer += decoder.write(data);
+    });
+
+    req.on('end', () => {
+        buffer += decoder.end();
+        // log the payload
+        console.log('Payload:', buffer);
+    });
 
     // send response
     res.writeHead(200, { 'Content-Type': 'text/plain' });
