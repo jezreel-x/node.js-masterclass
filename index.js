@@ -1,14 +1,79 @@
 // importing necessary modules
 
-const { stat } = require('fs');
 const http = require('http');
+const https = require('https');
 const url = require('url');
+const fs = require('fs');
+const _data = require('./lib/data');
 const StringDecoder = require('string_decoder').StringDecoder;
 const config = require('./config');
+const handlers = require('./lib/handlers');
 
-// creating a server
-const server = http.createServer((req, res) => {
 
+// Testing the data module
+// _data.create('test', 'newFile', { foo: 'bar' }, (err) => {
+//     if (!err) {
+//         console.log('File created successfully');
+//     } else {
+//         console.log('Error creating file:', err);
+//     }
+// });
+
+
+// _data.read('test', 'newFile', (err, data) => {
+//     if (!err && data) {
+//         const parsedData = JSON.parse(data);
+//         console.log('File data:', parsedData);
+//     } else {
+//         console.log('Error reading file:', err);
+//     }
+// });
+
+// _data.update('test', 'newFile', { foo: 'baz' }, (err) => {
+//     if (!err) {
+//         console.log('File updated successfully');
+//     } else {
+//         console.log('Error updating file:', err);
+//     }
+// });
+
+_data.delete('test', 'newFile', (err) => {
+    if (!err) {
+        console.log('File deleted successfully');
+    } else {
+        console.log(err);
+    }
+});
+
+// creating a http server
+const httpServer = http.createServer((req, res) => {
+    unifiedServer(req, res);
+});
+
+// http server listening on HTTP port
+httpServer.listen(config.httpPort, () => {
+    console.log(`Server is listening on port ${config.httpPort} in ${config.envName} mode`);
+});
+
+
+// create a https server
+const httpsServerOptions = {
+    'key': fs.readFileSync('./https/key.pem'),
+    'cert': fs.readFileSync('./https/cert.pem')
+};
+
+const httpsServer = https.createServer(httpsServerOptions, (req, res) => {
+    unifiedServer(req, res);
+});
+
+// https server listening on HTTPS port
+httpsServer.listen(config.httpsPort, () => {
+    console.log(`HTTPS Server is listening on port ${config.httpsPort} in ${config.envName} mode`);
+});
+
+
+// unified server logic for both http and https server
+const unifiedServer = (req, res) => {
     // parsing the request URL
     const parsedUrl = url.parse(req.url, true);
 
@@ -58,28 +123,10 @@ const server = http.createServer((req, res) => {
     // res.end(`Normalized Path: ${normalizedPath}\nMethod: ${method}\n`);
 
     // console.log('Query Parameters:', queryParams);
-});
-
-// server listening on port 3000
-server.listen(config.port, () => {
-    console.log(`Server is listening on port ${config.port} in ${config.envName} mode`);
-});
-
-
-// Define handlers
-const handlers = {};
-
-// Sample handler
-handlers.sample = (data, callback) => {
-    callback(200, { message: 'This is a sample handler' });
-};
-
-// Not found handler
-handlers.notFound = (data, callback) => {
-    callback(404);
 };
 
 // Define a request router
 const router = {
-    'sample' : handlers.sample
+    // 'sample' : handlers.sample
+    'ping' : handlers.ping
 };
