@@ -8,6 +8,7 @@ const _data = require('./lib/data');
 const StringDecoder = require('string_decoder').StringDecoder;
 const config = require('./config');
 const handlers = require('./lib/handlers');
+const helpers = require('./lib/helpers');
 
 
 // Testing the data module
@@ -37,13 +38,13 @@ const handlers = require('./lib/handlers');
 //     }
 // });
 
-_data.delete('test', 'newFile', (err) => {
-    if (!err) {
-        console.log('File deleted successfully');
-    } else {
-        console.log(err);
-    }
-});
+// _data.delete('test', 'newFile', (err) => {
+//     if (!err) {
+//         console.log('File deleted successfully');
+//     } else {
+//         console.log(err);
+//     }
+// });
 
 // creating a http server
 const httpServer = http.createServer((req, res) => {
@@ -89,6 +90,9 @@ const unifiedServer = (req, res) => {
     // access the HTTP method
     const method = req.method.toLowerCase();
 
+    // access the headers
+    const headers = req.headers;
+
     // accessing the payload (if any)
     const decoder = new StringDecoder('utf-8');
     let buffer = '';
@@ -102,7 +106,7 @@ const unifiedServer = (req, res) => {
 
         // call the appropriate handler
         const handler = router[normalizedPath] || handlers.notFound;
-        handler({ normalizedPath, method, pathname, queryParams, payload: buffer }, (statusCode, payload) => {
+        handler({ normalizedPath, method, pathname, headers, queryParams, payload: helpers.parseJsonToObject(buffer) }, (statusCode, payload) => {
             payload = typeof payload === 'object' ? payload : {};
             statusCode = typeof statusCode === 'number' ? statusCode : 200;
 
@@ -128,5 +132,6 @@ const unifiedServer = (req, res) => {
 // Define a request router
 const router = {
     // 'sample' : handlers.sample
-    'ping' : handlers.ping
+    'ping' : handlers.ping,
+    'users' : handlers.users
 };

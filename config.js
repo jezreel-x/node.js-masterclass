@@ -24,11 +24,11 @@ const currentEnvironment = typeof(process.env.NODE_ENV) === 'string' ? process.e
 const environmentToExport = typeof(environments[currentEnvironment]) === 'object' ? environments[currentEnvironment] : environments.staging;
 
 // debug lines
-console.log("DEBUG - Current env var:", currentEnvironment);
-console.log("DEBUG - Looking for:", environments[currentEnvironment]);
-console.log("DEBUG - Environment to export:", environmentToExport.envName);
-console.log("DEBUG - Available environments:", Object.keys(environments));
-console.log("DEBUG - environments object:", environments);
+// console.log("DEBUG - Current env var:", currentEnvironment);
+// console.log("DEBUG - Looking for:", environments[currentEnvironment]);
+// console.log("DEBUG - Environment to export:", environmentToExport.envName);
+// console.log("DEBUG - Available environments:", Object.keys(environments));
+// console.log("DEBUG - environments object:", environments);
 
 // Export the module
 module.exports = environmentToExport;
