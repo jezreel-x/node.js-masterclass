@@ -1,5 +1,7 @@
 // importing necessary modules
 
+require('dotenv').config();
+
 const http = require('http');
 const https = require('https');
 const url = require('url');

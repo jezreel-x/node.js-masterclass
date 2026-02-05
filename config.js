@@ -8,7 +8,12 @@ environments.staging = {
     httpPort: 3000,
     httpsPort: 3001,
     envName: 'staging',
-    maxChecks: 5
+    maxChecks: 5,
+    twilio: {
+        accountSid: process.env.TWILIO_ACCOUNT_SID,
+        authToken: process.env.TWILIO_AUTH_TOKEN,
+        fromPhone: process.env.TWILIO_FROM_PHONE
+    }
 };
 
 // Production environment
