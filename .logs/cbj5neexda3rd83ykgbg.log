@@ -1,0 +1,1 @@
+{"check":{"id":"cbj5neexda3rd83ykgbg","userPhone":"0783150355","protocol":"https","url":"gmail.com","method":"get","successCodes":[200,201,403],"timeoutSeconds":3,"state":"down","lastChecked":1771225929830},"outcome":{"error":false,"responseCode":301},"state":"down","alert":false,"time":1771242337245}
