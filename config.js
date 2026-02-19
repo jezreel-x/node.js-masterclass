@@ -13,6 +13,12 @@ environments.staging = {
         accountSid: process.env.TWILIO_ACCOUNT_SID,
         authToken: process.env.TWILIO_AUTH_TOKEN,
         fromPhone: process.env.TWILIO_FROM_PHONE
+    },
+    templateGlobals: {
+        appName: 'UptimeChecker',
+        companyName: 'NotARealCompany, Inc.',
+        yearCreated: '2024',
+        baseUrl: 'http://localhost:3000/'
     }
 };
 
@@ -21,7 +27,18 @@ environments.production = {
     httpPort: 5000,
     httpsPort: 5001,
     envName: 'production',
-    maxChecks: 5
+    maxChecks: 5,
+    twilio: {
+        accountSid: process.env.TWILIO_ACCOUNT_SID,
+        authToken: process.env.TWILIO_AUTH_TOKEN,
+        fromPhone: process.env.TWILIO_FROM_PHONE
+    },
+    templateGlobals: {
+        appName: 'UptimeChecker',
+        companyName: 'NotARealCompany, Inc.',
+        yearCreated: '2024',
+        baseUrl: 'http://localhost:5000/'
+    }
 };
 
 // Determine which environment was passed as a command-line argument
