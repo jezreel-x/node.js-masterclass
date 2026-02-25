@@ -26,6 +26,7 @@ app.client.request = function(headers,path,method,queryStringObject,payload,call
   callback = typeof(callback) == 'function' ? callback : false;
 
   // For each query string parameter sent, add it to the path
+  // transforms a query string object into a properly formatted URL like -> { 'id' : 1, 'name' : 'foo' } to "?id=1&name=foo"
   var requestUrl = path+'?';
   var counter = 0;
   for(var queryKey in queryStringObject){
@@ -42,8 +43,8 @@ app.client.request = function(headers,path,method,queryStringObject,payload,call
 
   // Form the http request as a JSON type
   var xhr = new XMLHttpRequest();
-  xhr.open(method, requestUrl, true);
-  xhr.setRequestHeader("Content-type", "application/json");
+  xhr.open(method, requestUrl, true); // 
+  xhr.setRequestHeader("Content-type", "application/json"); // serving the server JSON and telling it to expect JSON in return
 
   // For each header sent, add it to the request
   for(var headerKey in headers){
@@ -76,7 +77,7 @@ app.client.request = function(headers,path,method,queryStringObject,payload,call
       }
   }
 
-  // Send the payload as JSON
+  // Send the HTTP request payload as JSON
   var payloadString = JSON.stringify(payload);
   xhr.send(payloadString);
 
@@ -84,15 +85,18 @@ app.client.request = function(headers,path,method,queryStringObject,payload,call
 
 // Bind the logout button
 app.bindLogoutButton = function(){
-  document.getElementById("logoutButton").addEventListener("click", function(e){
+  var logoutButton = document.getElementById("logoutButton");
+  if(logoutButton){
+    logoutButton.addEventListener("click", function(e){
 
-    // Stop it from redirecting anywhere
-    e.preventDefault();
+      // Stop it from redirecting anywhere
+      e.preventDefault();
 
-    // Log the user out
-    app.logUserOut();
+      // Log the user out
+      app.logUserOut();
 
-  });
+    });
+  }
 };
 
 // Log the user out then redirect them
@@ -218,6 +222,9 @@ app.formResponseProcessor = function(formId,requestPayload,responsePayload){
   var functionToCall = false;
   // If account creation was successful, try to immediately log the user in
   if(formId == 'accountCreate'){
+
+    console.log("Account creation successful, logging user in...");
+
     // Take the phone and password, and use it to log the user in
     var newPayload = {
       'phone' : requestPayload.phone,
@@ -228,8 +235,12 @@ app.formResponseProcessor = function(formId,requestPayload,responsePayload){
       // Display an error on the form if needed
       if(newStatusCode !== 200){
 
+        // Log the actual error for debugging
+        console.log("Login failed after account creation. Status:", newStatusCode, "Response:", newResponsePayload);
+
         // Set the formError field with the error text
-        document.querySelector("#"+formId+" .formError").innerHTML = 'Sorry, an error has occured. Please try again.';
+        var errorMsg = typeof(newResponsePayload.Error) == 'string' ? newResponsePayload.Error : 'Sorry, an error has occured. Please try again.';
+        document.querySelector("#"+formId+" .formError").innerHTML = errorMsg;
 
         // Show (unhide) the form error field on the form
         document.querySelector("#"+formId+" .formError").style.display = 'block';
